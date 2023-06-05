@@ -1,4 +1,4 @@
-IMPORTANT: None of the information in the CSV file is sensitive, it is all randomly generated data to test the formatting of a simulated Death Master File.
+Note/Disclaimer: None of the information in the CSV file is sensitive, it is all randomly generated data to test the formatting of a simulated Death Master File.
 
 The provided code is a program designed to read a file that simulates the Social Security Administration's Death Master File (DMF) data.
 The program aims to process the DMF records, extract relevant information, and perform various operations on the verified individuals' data.
