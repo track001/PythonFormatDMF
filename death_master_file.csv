@@ -1,0 +1,56 @@
+first_name,last_name,middle_initial,date_of_birth,date_of_death,ssn,verification
+Jennifer,Williams,U,1975-11-15,1999-10-29,069-17-9556,Verified
+David,Thomas,Q,1929-12-25,2007-12-03,124-47-0135,Verified
+David,Anderson,O,1949-06-19,1974-03-22,115-22-0620,Not Verified
+Jane,Smith,C,1976-02-14,2019-09-03,331-48-5859,Not Verified
+Jane,Brown,H,1981-09-08,2004-06-28,949-55-7484,Verified
+Emily,Thomas,D,1975-06-02,2023-06-02,128-63-9236,Not Verified
+Michael,Johnson,K,1931-11-11,2006-09-25,729-60-4569,Not Verified
+Michael,Smith,Q,1980-08-24,2006-07-06,182-85-6446,Not Verified
+Jennifer,Anderson,S,1982-10-11,2005-01-07,442-77-4560,Not Verified
+David,Doe,V,1960-01-14,1963-12-25,094-66-4897,Verified
+Christopher,Anderson,F,1984-08-28,2014-11-21,114-02-3142,Not Verified
+Amanda,Brown,J,1990-06-29,1999-05-04,873-73-3772,Not Verified
+Jane,Brown,D,1959-08-08,1965-08-16,554-64-5732,Verified
+Jennifer,Doe,D,2007-01-09,2013-10-27,154-96-7918,Verified
+Michael,Doe,N,1995-03-15,1996-10-11,131-30-9377,Not Verified
+David,Williams,V,1966-04-11,2023-04-24,858-87-2917,Verified
+John,Brown,O,1971-12-04,1981-12-15,211-91-3935,Verified
+John,Brown,P,1982-07-10,1984-07-23,978-71-1068,Verified
+David,Smith,O,1982-11-23,1989-04-30,535-24-2486,Not Verified
+Amanda,Thomas,R,1990-07-31,2022-09-30,381-18-5981,Not Verified
+Christopher,Smith,C,1977-07-28,2000-02-09,295-24-1556,Not Verified
+Jane,Brown,X,1961-05-15,2018-12-17,067-29-2855,Verified
+David,Thomas,X,1919-03-10,1943-03-08,587-52-2662,Verified
+David,Williams,A,2010-09-02,2012-03-29,232-70-8917,Not Verified
+Emily,Anderson,T,1990-03-08,2002-05-27,943-16-4684,Verified
+Amanda,Brown,C,2022-06-14,2022-11-20,909-43-2885,Verified
+Amanda,Smith,T,1986-10-28,1995-05-08,217-31-1727,Verified
+Jennifer,Thomas,Z,1906-12-24,1919-06-30,057-50-9305,Verified
+Michael,Johnson,G,1967-03-07,1983-07-18,022-75-6184,Not Verified
+Michael,Brown,E,1959-09-24,1995-06-19,985-92-7235,Verified
+Amanda,Doe,T,1983-08-04,2013-03-15,649-29-0908,Verified
+Jane,Anderson,S,1908-07-30,2013-03-23,291-38-7963,Not Verified
+Christopher,Thomas,E,1904-08-15,2008-02-11,516-81-4125,Not Verified
+Jane,Johnson,O,1967-01-09,1974-09-02,180-89-7559,Verified
+John,Doe,U,1905-02-13,1935-10-04,951-35-3920,Not Verified
+Jane,Smith,B,1949-12-23,2011-09-07,385-59-2689,Verified
+Christopher,Johnson,D,1993-03-23,2002-07-30,721-61-7299,Not Verified
+Michael,Williams,H,1975-04-15,1993-07-12,889-80-4297,Not Verified
+Jane,Doe,C,2023-05-22,2023-05-26,047-04-8528,Not Verified
+Christopher,Johnson,A,1964-08-24,1984-08-09,443-29-7715,Not Verified
+John,Johnson,A,1969-05-05,1990-05-04,355-41-9486,Not Verified
+Jennifer,Smith,F,1927-09-18,2009-04-01,086-36-7539,Verified
+Emily,Thomas,P,2013-03-07,2014-12-07,655-78-3266,Verified
+Michael,Johnson,U,1953-07-17,1958-05-18,522-94-3683,Verified
+Amanda,Williams,K,1996-01-03,1997-02-26,180-96-3230,Not Verified
+Jane,Thomas,H,1961-08-08,1990-07-02,568-73-9053,Verified
+Michael,Smith,X,1920-03-06,1992-10-28,397-80-8197,Not Verified
+David,Johnson,B,1917-11-10,2006-03-04,586-36-1310,Not Verified
+Christopher,Anderson,D,1974-05-18,1985-06-12,932-48-6557,Verified
+John,Smith,T,1952-02-18,1986-10-15,903-53-7170,Not Verified
+Michael,Brown,Q,1944-04-06,1995-01-20,777-51-6016,Verified
+David,Williams,C,1945-01-21,1958-11-20,266-54-6996,Not Verified
+Jane,Brown,H,1901-06-30,1910-06-21,164-24-5013,Verified
+Jane,Anderson,W,1985-09-08,1992-03-31,989-77-6441,Not Verified
+Michael,Johnson,Y,1955-12-02,1981-03-02,083-77-4557,Not Verified
