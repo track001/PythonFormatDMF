@@ -113,10 +113,15 @@ def save_encrypted_csv():
                                                initialfile=f"VerifiedIndividuals{today}")
 
     if destination:
-        encrypted_df = verified_individuals.copy()
-        encrypted_df['ssn'] = 'XXX-XX-' + encrypted_df['ssn'].str[-4:]
-        encrypted_df.to_csv(destination, index=False)
-        messagebox.showinfo("Success", "Encrypted CSV file saved successfully!")
+        if 'verification' in verified_individuals.columns:
+            verified_df = verified_individuals[verified_individuals['verification'] == 'Verified']
+            encrypted_df = verified_df.copy()
+            encrypted_df['ssn'] = encrypted_df['ssn'].str[:-4] + 'XXXX'
+            encrypted_df.to_csv(destination, index=False)
+            messagebox.showinfo("Success", "Encrypted CSV file saved successfully!")
+        else:
+            messagebox.showinfo("Information", "No verified individuals found to save.")
+
 
 window = tk.Tk()
 window.title("Death Master File Viewer")
