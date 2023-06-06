@@ -1,0 +1,36 @@
+The program itself cannot automatically run every Saturday on its own. It needs an external mechanism to trigger its execution on Saturdays. One way to achieve this is by using a task scheduling system or a cron job.
+
+How I can set up a cron job to run the program automatically every Saturday (depending on OS):
+
+FIRST
+1.Open the Task Scheduler: Press Win + R on your keyboard to open the Run dialog, then type taskschd.msc and press Enter. The Task Scheduler window will open.
+
+2. Click on "Create Basic Task" or "Create Task" in the right-hand pane. Both options will allow you to schedule a task, but "Create Basic Task" provides a step-by-step wizard, while "Create Task" gives you more advanced options.
+
+3. Follow the steps in the Task Scheduler wizard or the Create Task dialog to configure your scheduled task. Here's a general outline:
+
+a. Provide a name and description for your task.
+b. Choose the trigger that defines when the task should run. In your case, select "Weekly" and set it to run every Saturday.
+c. Specify the action to run your Python script. In the Actions tab, click "New" and provide the path to the Python executable (python.exe), and the path to your script (script.py) as the argument.
+d. Optionally, you can set additional settings such as the starting date and time, user account, and other conditions based on your requirements.
+e. Review the summary of your task configuration and click "Finish" or "OK" to save it.
+
+Once the task is created, the Task Scheduler will handle the execution of your program automatically according to the specified schedule.
+
+
+
+ALTERNATE
+macOS/Linux option:
+
+Open the terminal or command prompt on yWindows system.
+Type crontab -e to open the cron table for editing.
+Add the following line to the cron table:
+bash
+Copy code
+0 0 * * 6 python /path/to/your/script.py
+
+This cron job configuration will execute the script /path/to/your/script.py at midnight (0:00) every Saturday (day of the week 6).
+
+Save the cron table and exit the editor.
+
+With this setup, the cron job will trigger the execution of your program every Saturday without manual intervention. Make sure to replace /path/to/your/script.py with the actual path to your Python script.

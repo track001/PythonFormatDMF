@@ -103,6 +103,7 @@ while True:
     print("1. View all verified individuals")
     print("2. Filter by age")
     print("3. Download a new CSV with verified individuals")
+    print("4. Download weekly or monthly update from NTIS file")
     print("Q. Quit")
     option = input("\nEnter the option number (or 'Q' to quit): ")
 
@@ -117,8 +118,25 @@ while True:
         # Specify the destination path to save the downloaded file
         destination = 'C:\\Users\\schwarzt\\Desktop\\death_master_file.csv'
 
+        download_csv_from_ntis(url, destination)
+        print("CSV file downloaded successfully!")
+    elif option == '4':
+        print("Choose the update frequency:")
+        print("1. Weekly")
+        print("2. Monthly")
+        frequency_option = input("Enter the option number: ")
 
+        if frequency_option == '1':
+            # Specify the URL for the weekly update
+            url = 'https://dmf.ntis.gov/weekly/'
+        elif frequency_option == '2':
+            # Specify the URL for the monthly update
+            url = 'https://dmf.ntis.gov/monthly/'
+        else:
+            print("Invalid option. Please try again.")
+            continue
 
+        destination = 'C:\\Users\\schwarzt\\Desktop\\death_master_file.csv'
         download_csv_from_ntis(url, destination)
         print("CSV file downloaded successfully!")
     elif option.lower() == 'q':
