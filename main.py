@@ -1,282 +1,144 @@
-import csv
-from datetime import datetime, date
-import os
-import requests
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, Menu
+from datetime import date
+import pandas as pd
+import urllib.request
 
 
-# Function to encrypt/mask SSN
-def encrypt_ssn(ssn):
-  return '*' * 9 + ssn[-4:]
+def read_death_master_file(file_path):
+    df = pd.read_csv(file_path)
+    return df
 
 
-# Function to download the Death Master File CSV from NTIS website
-def download_csv_from_ntis(url, destination):
-  response = requests.get(url)
-  with open(destination, 'wb') as file:
-    file.write(response.content)
+def filter_by_age(age):
+    today = pd.Timestamp.now().normalize()
+    filtered_df = verified_individuals[
+        ((today - pd.to_datetime(verified_individuals['date_of_birth'], errors='coerce')).dt.days / 365.25 <= age)
+        & (verified_individuals['date_of_death'].isnull()
+           | ((today - pd.to_datetime(verified_individuals['date_of_death'], errors='coerce')).dt.days / 365.25 <= age))
+    ]
+    preview_filtered_individuals(filtered_df)
 
 
-# Function to display all verified individuals
+def preview_filtered_individuals(df):
+    verified_individuals_text.delete("1.0", tk.END)
+    verified_individuals_text.insert(tk.END, df.to_string(index=False))
+
+
 def display_verified_individuals():
-  verified_individuals_text.delete(1.0, tk.END)
-  verified_individuals_text.insert(
-    tk.END,
-    f"Total number of verified individuals: {len(verified_individuals)}\n")
-  ages = set([individual[3] for individual in verified_individuals])
-  verified_individuals_text.insert(
-    tk.END, f"Available ages: {', '.join(str(age) for age in ages)}\n")
-  for i, individual in enumerate(verified_individuals):
-    verified_individuals_text.insert(
-      tk.END,
-      f"{i+1}. Name: {individual[0]} {individual[1]}, Age: {individual[3]}, Encrypted SSN: {individual[2]}, Original SSN: {individual[4]}\n"
-    )
+    today = pd.Timestamp.now().normalize()
+    verified_individuals['date_of_birth'] = pd.to_datetime(verified_individuals['date_of_birth'], errors='coerce')
+    verified_individuals['date_of_death'] = pd.to_datetime(verified_individuals['date_of_death'], errors='coerce')
+    verified_individuals['Age'] = ((today - verified_individuals['date_of_birth']).dt.days / 365.25).astype(int)
+    verified_individuals_text.delete("1.0", tk.END)
+    verified_individuals_text.insert(tk.END, verified_individuals.to_string(index=False))
+
+    age_options = verified_individuals['Age'].unique()
+    age_options_text.delete("1.0", tk.END)
+    age_options_text.insert(tk.END, "\n".join(str(age) for age in age_options))
 
 
-# Function to filter verified individuals by age
-def filter_by_age():
-  age = int(age_entry.get())
-  filtered_individuals = [
-    individual for individual in verified_individuals if individual[3] == age
-  ]
-  filtered_individuals_text.delete(1.0, tk.END)
-  filtered_individuals_text.insert(
-    tk.END,
-    f"Total number of individuals at age {age}: {len(filtered_individuals)}\n")
-  for i, individual in enumerate(filtered_individuals):
-    filtered_individuals_text.insert(
-      tk.END,
-      f"{i+1}. Name: {individual[0]} {individual[1]}, Age: {individual[3]}, Encrypted SSN: {individual[2]}, Original SSN: {individual[4]}\n"
-    )
-
-
-# Function to handle the download button click event
-def download_button_click():
-  url = 'https://dmf.ntis.gov/weekly/'
-  destination = filedialog.asksaveasfilename(defaultextension=".csv",
-                                             filetypes=(("CSV files", "*.csv"),
-                                                        ("All files", "*.*")))
-  if destination:
+def download_csv_from_ntis(url, destination):
     try:
-      download_csv_from_ntis(url, destination)
-      messagebox.showinfo("Success", "CSV file downloaded successfully!")
+        urllib.request.urlretrieve(url, destination)
+        global verified_individuals
+        verified_individuals = read_death_master_file(destination)
+        messagebox.showinfo("Success", "CSV file downloaded and read successfully!")
+        display_verified_individuals()
+    except pd.errors.ParserError as pe:
+        messagebox.showerror("Error", f"Error parsing CSV file: {str(pe)}")
     except Exception as e:
-      messagebox.showerror("Error", f"An error occurred: {str(e)}")
+        messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
 
-# Create the main window
+def open_file_dialog():
+    file_path = filedialog.askopenfilename(filetypes=(("CSV files", "*.csv"), ("All files", "*.*")))
+    if file_path:
+        try:
+            global verified_individuals
+            verified_individuals = read_death_master_file(file_path)
+            messagebox.showinfo("Success", "CSV file read successfully!")
+            display_verified_individuals()
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred: {str(e)}")
+
+
+def fetch_from_ntis():
+    menu = Menu(fetch_from_ntis_button, tearoff=0)
+    menu.add_command(label="Weekly", command=fetch_weekly)
+    menu.add_command(label="Monthly", command=fetch_monthly)
+
+    fetch_from_ntis_button.configure(menu=menu)
+
+
+def fetch_weekly():
+    url = 'https://dmf.ntis.gov/weekly/'
+    today = date.today().strftime("%m%d%Y")
+    destination = filedialog.asksaveasfilename(defaultextension=".csv",
+                                               filetypes=(("CSV files", "*.csv"), ("All files", "*.*")),
+                                               initialfile=f"DMFVerificationsWeekly{today}")
+    if destination:
+        try:
+            download_csv_from_ntis(url, destination)
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred: {str(e)}")
+
+
+def fetch_monthly():
+    url = 'https://dmf.ntis.gov/monthly/'
+    today = date.today().strftime("%m%d%Y")
+    destination = filedialog.asksaveasfilename(defaultextension=".csv",
+                                               filetypes=(("CSV files", "*.csv"), ("All files", "*.*")),
+                                               initialfile=f"DMFVerificationsMonthly{today}")
+    if destination:
+        try:
+            download_csv_from_ntis(url, destination)
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred: {str(e)}")
+
+
 window = tk.Tk()
-window.title("NTIS Data")
-window.geometry("600x400")
+window.title("Death Master File Viewer")
 
-# Create and position the labels, entries, buttons, and text areas
-
-title_label = tk.Label(window, text="NTIS Data", font=("Arial", 16))
+title_label = tk.Label(window, text="Death Master File Viewer", font=("Arial", 16, "bold"))
 title_label.pack(pady=10)
 
-# Options frame
-options_frame = tk.Frame(window)
-options_frame.pack(pady=10)
+read_from_csv_button = tk.Button(window, text="Read from CSV", command=open_file_dialog)
+read_from_csv_button.pack(pady=5)
 
-# Option 1: View all verified individuals
-option1_button = tk.Button(options_frame,
-                           text="View all verified individuals",
-                           command=display_verified_individuals)
-option1_button.grid(row=0, column=0, padx=5)
+fetch_from_ntis_button = tk.Menubutton(window, text="Fetch from NTIS", relief=tk.RAISED, bd=2)
+fetch_from_ntis_button.pack(pady=5)
 
-# Option 2: Filter by age
-option2_label = tk.Label(options_frame, text="Filter by age:")
-option2_label.grid(row=0, column=1, padx=5)
+fetch_from_ntis()
 
-age_entry = tk.Entry(options_frame, width=5)
-age_entry.grid(row=0, column=2, padx=5)
+age_label = tk.Label(window, text="Filter by Age:")
+age_label.pack()
 
-filter_button = tk.Button(options_frame, text="Filter", command=filter_by_age)
-filter_button.grid(row=0, column=3, padx=5)
-
-# Option 3: Download a new CSV with verified individuals
-download_button = tk.Button(options_frame,
-                            text="Download CSV",
-                            command=download_button_click)
-download_button.grid(row=0, column=4, padx=5)
-
-# Verified individuals text area
-verified_individuals_text = tk.Text(window, height=10, width=60)
-verified_individuals_text.pack()
-
-# Filtered individuals text area
-filtered_individuals_text = tk.Text(window, height=10, width=60)
-filtered_individuals_text.pack()
-
-# Quit button
-quit_button = tk.Button(window, text="Quit", command=window.quit)
-quit_button.pack(pady=10)
-
-# Read the Death Master File from CSV
-csv_file_path = 'death_master_file.csv'
-verified_individuals = []
-
-with open(csv_file_path, 'r') as file:
-  csv_reader = csv.reader(file)
-  next(csv_reader)  # Skip the header row
-  for row in csv_reader:
-    first_name = row[0]
-    last_name = row[1]
-    middle_initial = row[2]
-    date_of_birth = row[3]
-    date_of_death = row[4]
-    ssn = row[5]
-    verification = row[6]
-    if verification.strip().lower() == 'verified':
-      today = date.today()
-      birth_date = datetime.strptime(date_of_birth, "%Y-%m-%d").date()
-      age = today.year - birth_date.year - ((today.month, today.day) <
-                                            (birth_date.month, birth_date.day))
-      encrypted_ssn = encrypt_ssn(ssn)
-      verified_individuals.append(
-        [first_name, last_name, encrypted_ssn, age, ssn])
-
-# Start the GUI event loop
-window.mainloop()
+age_entry = tk.Entry(window, width=10)
+age_entry.pack()
 
 
-# Function to encrypt/mask SSN
-def encrypt_ssn(ssn):
-  return '*' * 9 + ssn[-4:]
-
-
-# Function to download the Death Master File CSV from NTIS website
-def download_csv_from_ntis(url, destination):
-  response = requests.get(url)
-  with open(destination, 'wb') as file:
-    file.write(response.content)
-
-
-# File path of the Death Master File CSV
-csv_file_path = 'death_master_file.csv'
-
-# List to store verified individuals
-verified_individuals = []
-
-# Read the Death Master File from CSV
-with open(csv_file_path, 'r') as file:
-  csv_reader = csv.reader(file)
-  next(csv_reader)  # Skip the header row
-
-  # Process each record in the Death Master File
-  for row in csv_reader:
-    first_name = row[0]
-    last_name = row[1]
-    middle_initial = row[2]
-    date_of_birth = row[3]
-    date_of_death = row[4]
-    ssn = row[5]
-    verification = row[6]
-
-    # Check if the customer is verified as deceased
-    if verification.strip().lower() == 'verified':
-      # Calculate the age based on today's date and the date of birth
-      today = date.today()
-      birth_date = datetime.strptime(date_of_birth, "%Y-%m-%d").date()
-      age = today.year - birth_date.year - ((today.month, today.day) <
-                                            (birth_date.month, birth_date.day))
-
-      # Encrypt the SSN
-      encrypted_ssn = encrypt_ssn(ssn)
-
-      # Add the record to the verified individuals list
-      verified_individuals.append(
-        [first_name, last_name, encrypted_ssn, age, ssn])
-
-
-# Function to display all verified individuals
-def display_verified_individuals():
-  print("Total number of verified individuals:", len(verified_individuals))
-  ages = set([individual[3] for individual in verified_individuals])
-  print("Available ages:", ", ".join(str(age) for age in ages))
-  for i, individual in enumerate(verified_individuals):
-    print(
-      f"{i+1}. Name: {individual[0]} {individual[1]}, Age: {individual[3]}, Encrypted SSN: {individual[2]}, Original SSN: {individual[4]}"
-    )
-
-
-# Function to filter verified individuals by age
-def filter_by_age(age):
-  filtered_individuals = [
-    individual for individual in verified_individuals if individual[3] == age
-  ]
-  print(
-    f"Total number of individuals at age {age}: {len(filtered_individuals)}")
-  for i, individual in enumerate(filtered_individuals):
-    print(
-      f"{i+1}. Name: {individual[0]} {individual[1]}, Age: {individual[3]}, Encrypted SSN: {individual[2]}, Original SSN: {individual[4]}"
-    )
-
-
-# Function to download verified individuals as a new CSV
-def download_verified_csv():
-  base_filename = f"verified_individuals_{datetime.now().strftime('%m%d%Y')}"
-  filename = base_filename + ".csv"
-  index = 97  # ASCII value for 'a'
-  while os.path.exists(filename):
-    filename = f"{base_filename}{chr(index)}.csv"
-    index += 1
-
-  with open(filename, 'w', newline='') as file:
-    writer = csv.writer(file)
-    writer.writerow(["First Name", "Last Name", "Encrypted SSN", "Age"])
-    for individual in verified_individuals:
-      encrypted_ssn = "******" + individual[2][-4:]  # Encrypt the SSN
-      writer.writerow(
-        [individual[0], individual[1], encrypted_ssn, individual[3]])
-
-
-# Main program loop
-while True:
-  # Display the current date
-  print("\nToday's date:", date.today().strftime("%m-%d-%Y"))
-  print("\nOptions:")
-  print("1. View all verified individuals")
-  print("2. Filter by age")
-  print("3. Download a new CSV with verified individuals")
-  print("4. Download weekly or monthly update from NTIS file")
-  print("Q. Quit")
-  option = input("\nEnter the option number (or 'Q' to quit): ")
-
-  if option == '1':
-    display_verified_individuals()
-  elif option == '2':
-    age = int(input("Enter the age to filter by: "))
-    filter_by_age(age)
-  elif option == '3':
-    # Specify the URL of the Death Master File on the NTIS website
-    url = 'https://dmf.ntis.gov/weekly/'
-    # Specify the destination path to save the downloaded file
-    destination = 'C:\\Users\\schwarzt\\Desktop\\death_master_file.csv'
-
-    download_csv_from_ntis(url, destination)
-    print("CSV file downloaded successfully!")
-  elif option == '4':
-    print("Choose the update frequency:")
-    print("1. Weekly")
-    print("2. Monthly")
-    frequency_option = input("Enter the option number: ")
-
-    if frequency_option == '1':
-      # Specify the URL for the weekly update
-      url = 'https://dmf.ntis.gov/weekly/'
-    elif frequency_option == '2':
-      # Specify the URL for the monthly update
-      url = 'https://dmf.ntis.gov/monthly/'
+def filter_button_callback():
+    age = age_entry.get()
+    if age.isdigit():
+        filter_by_age(int(age))
     else:
-      print("Invalid option. Please try again.")
-      continue
+        messagebox.showerror("Error", "Please enter a valid age (numeric value).")
 
-    destination = 'C:\\Users\\schwarzt\\Desktop\\death_master_file.csv'
-    download_csv_from_ntis(url, destination)
-    print("CSV file downloaded successfully!")
-  elif option.lower() == 'q':
-    break
-  else:
-    print("Invalid option. Please try again.")
+
+filter_button = tk.Button(window, text="Filter", command=filter_button_callback)
+filter_button.pack(pady=5)
+
+view_all_button = tk.Button(window, text="View All", command=display_verified_individuals)
+view_all_button.pack(pady=5)
+
+age_options_label = tk.Label(window, text="Age Options:")
+age_options_label.pack()
+
+age_options_text = tk.Text(window, height=5, width=80)
+age_options_text.pack(pady=10)
+
+verified_individuals_text = tk.Text(window, height=20, width=100)
+verified_individuals_text.pack(pady=10)
+
+window.mainloop()

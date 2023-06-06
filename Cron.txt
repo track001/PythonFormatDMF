@@ -20,6 +20,8 @@ Once the task is created, the Task Scheduler will handle the execution of your p
 
 
 ALTERNATE
+
+
 macOS/Linux option:
 
 Open the terminal or command prompt on yWindows system.
