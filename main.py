@@ -19,6 +19,7 @@ def read_death_master_file(file_path):
   return df
 
 
+""" Reworked lower 2 functions
 def calculate_age(date_of_birth, date_of_death):
   today = date.today()
   birth_date = pd.to_datetime(date_of_birth)
@@ -28,6 +29,7 @@ def calculate_age(date_of_birth, date_of_death):
   else:
     age = (today - birth_date) // pd.Timedelta(days=365.25)
   return int(age)
+"""
 
 
 def display_verified_individuals():
@@ -137,23 +139,23 @@ def fetch_monthly():
 
 
 def save_encrypted_csv():
-  today = date.today().strftime("%m%d%Y")
-  destination = filedialog.asksaveasfilename(
-    defaultextension=".csv",
-    filetypes=(("CSV files", "*.csv"), ("All files", "*.*")),
-    initialfile=f"VerifiedIndividuals{today}")
+    today = date.today().strftime("%m%d%Y")
+    destination = filedialog.asksaveasfilename(
+        defaultextension=".csv",
+        filetypes=(("CSV files", "*.csv"), ("All files", "*.*")),
+        initialfile=f"VerifiedIndividuals{today}"
+    )
 
-  if destination:
-    if 'verification' in verified_individuals.columns:
-      verified_df = verified_individuals[verified_individuals['verification']
-                                         == 'Verified']
-      encrypted_df = verified_df.copy()
-      encrypted_df['ssn'] = encrypted_df['ssn'].str[:-4] + 'XXXX'
-      encrypted_df.to_csv(destination, index=False)
-      messagebox.showinfo("Success", "Encrypted CSV file saved successfully!")
-    else:
-      messagebox.showinfo("Information",
-                          "No verified individuals found to save.")
+    if destination:
+        if 'verification' in verified_individuals.columns:
+            verified_df = verified_individuals[verified_individuals['verification'] == 'Verified']
+            encrypted_df = verified_df.copy()
+            encrypted_df['ssn'] = encrypted_df['ssn'].str[-4:].str.pad(width=len(encrypted_df['ssn'][0]), fillchar='X')
+            encrypted_df.to_csv(destination, index=False)
+            messagebox.showinfo("Success", "Encrypted CSV file saved successfully!")
+        else:
+            messagebox.showinfo("Information", "No verified individuals found to save.")
+
 
 
 window = tk.Tk()
