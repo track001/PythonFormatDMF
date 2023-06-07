@@ -1,9 +1,13 @@
-import tkinter as tk  # Importing the tkinter module for creating GUI applications
-from tkinter import filedialog, messagebox, Menu  # Importing specific modules from tkinter
-from datetime import date  # Importing the date module from the datetime library
-import pandas as pd  # Importing the pandas library for data manipulation and analysis
-import time  # Importing the time module for time-related operations
-import os  # Importing the os module for interacting with the operating system
+import tkinter as tk  # GUI library
+from tkinter import filedialog, messagebox, Menu  # Specific components from tkinter
+from datetime import date  # Date-related functionality
+import pandas as pd  # Data manipulation library
+import time  # Time-related functionality
+import os  # Operating system-related functionality
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes  # Cryptography-related functionality
+from cryptography.hazmat.backends import default_backend  # Cryptography backend
+from cryptography.hazmat.primitives import padding  # Padding for encryption
+
 
 # Retrieve the password from the secret
 password = os.environ.get("PASSWORD")
@@ -11,7 +15,6 @@ password = os.environ.get("PASSWORD")
 # Global variables
 last_activity_time = time.time()
 is_authenticated = False
-
 
 # Function to check the password
 def check_password():
@@ -22,7 +25,6 @@ def check_password():
     password_window.destroy()
   else:
     messagebox.showerror("Authentication Failed", "Incorrect password.")
-
 
 # Create a password entry window
 password_window = tk.Tk()
@@ -45,7 +47,6 @@ password_window.mainloop()
 
 # Only proceed if the user is authenticated
 if is_authenticated:
-  # Rest of your code goes here
 
   import urllib.request
 
@@ -134,8 +135,7 @@ if is_authenticated:
     destination = filedialog.asksaveasfilename(
       defaultextension=".csv",
       filetypes=(("CSV files", "*.csv"), ("All files", "*.*")),
-      initialfile=f"DMFVerificationsWeekly{today}",
-    )
+      initialfile=f"DMFVerificationsWeekly{today}")
     if destination:
       try:
         download_csv_from_ntis(url, destination)
@@ -148,35 +148,54 @@ if is_authenticated:
     destination = filedialog.asksaveasfilename(
       defaultextension=".csv",
       filetypes=(("CSV files", "*.csv"), ("All files", "*.*")),
-      initialfile=f"DMFVerificationsMonthly{today}",
-    )
+      initialfile=f"DMFVerificationsMonthly{today}")
     if destination:
       try:
         download_csv_from_ntis(url, destination)
       except Exception as e:
         messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
-  def save_encrypted_csv():
+  def save_encrypted_csv(destination):
+    if destination:
+        if "verification" in verified_individuals.columns:
+            verified_df = verified_individuals[verified_individuals["verification"] == "Verified"]
+            encrypted_df = verified_df.copy()
+            backend = default_backend()
+            key = os.urandom(32)
+            cipher = Cipher(algorithms.AES(key), modes.ECB(), backend=backend)
+
+            encrypted_ssn_list = []
+            for ssn in encrypted_df["ssn"]:
+                # Split the SSN into two parts: first 5 digits and last 4 digits
+                ssn_first_part = ssn[:5]
+                ssn_last_part = ssn[5:]
+
+                # Pad the first part of the SSN to the block length (16 bytes) using PKCS7 padding
+                ssn_first_part_bytes = ssn_first_part.encode()
+                padder = padding.PKCS7(128).padder()
+                padded_data = padder.update(ssn_first_part_bytes) + padder.finalize()
+
+                encryptor = cipher.encryptor()  # Create a new encryptor for each SSN
+                encrypted_ssn_first_part = encryptor.update(padded_data) + encryptor.finalize()
+                encrypted_ssn = encrypted_ssn_first_part.hex() + ssn_last_part
+
+                encrypted_ssn_list.append(encrypted_ssn)
+
+            encrypted_df["ssn"] = encrypted_ssn_list
+            encrypted_df.to_csv(destination, index=False)
+            messagebox.showinfo("Success", "Encrypted CSV file saved successfully!")
+        else:
+            messagebox.showinfo("Information", "No verified individuals found to save.")
+
+
+
+  def save_encrypted_csv_dialog():
     today = date.today().strftime("%m%d%Y")
     destination = filedialog.asksaveasfilename(
       defaultextension=".csv",
       filetypes=(("CSV files", "*.csv"), ("All files", "*.*")),
-      initialfile=f"VerifiedIndividuals{today}",
-    )
-
-    if destination:
-      if "verification" in verified_individuals.columns:
-        verified_df = verified_individuals[verified_individuals["verification"]
-                                           == "Verified"]
-        encrypted_df = verified_df.copy()
-        encrypted_df["ssn"] = encrypted_df["ssn"].str[-4:].str.pad(
-          width=len(encrypted_df["ssn"][0]), fillchar="X")
-        encrypted_df.to_csv(destination, index=False)
-        messagebox.showinfo("Success",
-                            "Encrypted CSV file saved successfully!")
-      else:
-        messagebox.showinfo("Information",
-                            "No verified individuals found to save.")
+      initialfile=f"VerifiedIndividuals{today}")
+    save_encrypted_csv(destination)
 
   # GUI setup
   window = tk.Tk()
@@ -217,7 +236,7 @@ if is_authenticated:
 
   save_encrypted_csv_button = tk.Button(window,
                                         text="Save Encrypted CSV",
-                                        command=save_encrypted_csv)
+                                        command=save_encrypted_csv_dialog)
   save_encrypted_csv_button.pack(pady=5)
 
   verified_individuals_text = tk.Text(window, height=20, width=100)

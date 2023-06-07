@@ -10,6 +10,14 @@ The Death Master File Viewer is a graphical user interface (GUI) application bui
 - Calculate and display age options based on date of birth and date of death.
 - Save an encrypted version of the verified individuals' CSV file.
 
+# Encryption of SSN
+The Death Master Encrypter implements a basic encryption scheme to protect sensitive information, specifically the Social Security Numbers (SSN). The encryption process involves replacing the first 5 digits of the SSN with asterisks (*) while preserving the last 4 digits. This provides a level of obfuscation to protect the privacy of individuals' SSNs.
+
+<br> **Disclaimer:** When saving the encrypted data, please be aware that the encryption process is irreversible. To ensure the permanency of the encrypted data and prevent the retrieval of the original SSNs, it is recommended to create a new CSV file to store the encrypted data. Please exercise caution and securely delete the original file, including permanently deleting it from the recycle bin or trash folder on your operating system. If you need to access the data again, it is advised to redownload it from the NTIS website.
+
+# Handling Type Mismatch Issue
+One potential issue with the encryption process is a type mismatch between bytes and strings. The error occurs when attempting to concatenate the encrypted portion of the SSN (bytes) with the remaining part (string). To address this, the application now converts the remaining part of the SSN to bytes using the .encode() method before concatenating. This ensures that both the encrypted portion and the remaining part are of the same data type, allowing for successful concatenation.
+
 ## Installation
 
 1. Clone the repository:
