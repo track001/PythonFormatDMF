@@ -73,15 +73,20 @@ if is_authenticated:
     verified_individuals_text.delete("1.0", tk.END)
     verified_individuals_text.insert(tk.END, "")
 
-    if 'verification' in verified_individuals.columns:
-      verified_df = verified_individuals[verified_individuals['verification']
-                                         == 'Verified']
-      verified_individuals_text.insert(tk.END,
-                                       verified_df.to_string(index=False))
-      verified_count = len(verified_df)
-      total_count = len(verified_individuals)
-      verified_label.config(
-        text=f"Verified: {verified_count}/{total_count} people")
+    if 'verified_individuals' in globals():
+      if 'verification' in verified_individuals.columns:
+        verified_df = verified_individuals[verified_individuals['verification']
+                                           == 'Verified']
+        verified_individuals_text.insert(tk.END,
+                                         verified_df.to_string(index=False))
+        verified_count = len(verified_df)
+        total_count = len(verified_individuals)
+        verified_label.config(
+          text=f"Verified: {verified_count}/{total_count} people")
+      else:
+        verified_individuals_text.insert(tk.END,
+                                         "No verified individuals found.")
+        verified_label.config(text="Verified: 0/0 people")
     else:
       verified_individuals_text.insert(tk.END,
                                        "No verified individuals found.")
@@ -270,12 +275,17 @@ if is_authenticated:
           encryptor = cipher.encryptor()  # Create a new encryptor for each SSN
           encrypted_ssn_first_part = encryptor.update(
             padded_data) + encryptor.finalize()
-          encrypted_ssn = encrypted_ssn_first_part.hex() + ssn_last_part
+          encrypted_ssn = encrypted_ssn_first_part.hex(
+          ) + ssn_last_part  # Concatenate
 
-          encrypted_ssn_list.append(encrypted_ssn)
+          encrypted_ssn_list.append(
+            encrypted_ssn)  # Add encrypted SSN to the list
 
-        encrypted_df["ssn"] = encrypted_ssn_list
-        encrypted_df.to_csv(destination, index=False)
+        encrypted_df[
+          "ssn"] = encrypted_ssn_list  # Update the "ssn" column in the DataFrame
+        encrypted_df.to_csv(
+          destination,
+          index=False)  # Save the encrypted DataFrame to a CSV File
         messagebox.showinfo("Success",
                             "Encrypted CSV file saved successfully!")
       else:
@@ -322,19 +332,19 @@ fetch_from_ntis_button.pack(pady=5)
 
 fetch_from_ntis()  # Fetch options for the Fetch from NTIS button
 
-# Verified count label
+# Create a label widget to display the verified count
 verified_label = tk.Label(window, text="Verified: 0/0 people")
 verified_label.pack(pady=10)
 
-# Age Options label
+# Create a label widget for Age Options
 age_options_label = tk.Label(window, text="Age Options:")
 age_options_label.pack()
 
-# Age Options text box
+# Create a label widget for Age Options
 age_options_text = tk.Text(window, height=5, width=80)
 age_options_text.pack(pady=10)
 
-# View Verified button
+# Create a button to View Verified
 view_verified_button = tk.Button(window,
                                  text="View Ages",
                                  command=display_verified_individuals)
