@@ -1,9 +1,9 @@
-import tkinter as tk
-from tkinter import filedialog, messagebox, Menu
-from datetime import date
-import pandas as pd
-import time
-import os
+import tkinter as tk  # Importing the tkinter module for creating GUI applications
+from tkinter import filedialog, messagebox, Menu  # Importing specific modules from tkinter
+from datetime import date  # Importing the date module from the datetime library
+import pandas as pd  # Importing the pandas library for data manipulation and analysis
+import time  # Importing the time module for time-related operations
+import os  # Importing the os module for interacting with the operating system
 
 # Retrieve the password from the secret
 password = os.environ.get("PASSWORD")
@@ -26,7 +26,7 @@ def check_password():
 
 # Create a password entry window
 password_window = tk.Tk()
-password_window.title("Password Entry")
+password_window.title("Login")
 
 # Add a label and entry field for the password
 password_label = tk.Label(password_window, text="Password:")
@@ -67,9 +67,14 @@ if is_authenticated:
                                          == 'Verified']
       verified_individuals_text.insert(tk.END,
                                        verified_df.to_string(index=False))
+      verified_count = len(verified_df)
+      total_count = len(verified_individuals)
+      verified_label.config(
+        text=f"Verified: {verified_count}/{total_count} people")
     else:
       verified_individuals_text.insert(tk.END,
                                        "No verified individuals found.")
+      verified_label.config(text="Verified: 0/0 people")
 
   def display_age_options(df):
     if 'date_of_birth' in df.columns and 'date_of_death' in df.columns:
@@ -175,10 +180,10 @@ if is_authenticated:
 
   # GUI setup
   window = tk.Tk()
-  window.title("Death Master File Viewer")
+  window.title("Death Master Encrypter")
 
   title_label = tk.Label(window,
-                         text="Death Master File Viewer",
+                         text="File Viewer",
                          font=("Arial", 16, "bold"))
   title_label.pack(pady=10)
 
@@ -194,6 +199,10 @@ if is_authenticated:
   fetch_from_ntis_button.pack(pady=5)
 
   fetch_from_ntis()
+
+  # Add a label for the verified count
+  verified_label = tk.Label(window, text="Verified: 0/0 people")
+  verified_label.pack(pady=10)
 
   age_options_label = tk.Label(window, text="Age Options:")
   age_options_label.pack()
