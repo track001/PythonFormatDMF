@@ -3,9 +3,12 @@ from tkinter import filedialog, messagebox, Menu
 from datetime import date
 import pandas as pd
 import time
+import os
+
+# Retrieve the password from the secret
+password = os.environ.get("PASSWORD")
 
 # Global variables
-password = "YourPassword"
 last_activity_time = time.time()
 is_authenticated = False
 
