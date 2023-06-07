@@ -1,6 +1,6 @@
 # Death Master File Viewer
 
-The Death Master File Viewer is a graphical user interface (GUI) application built in Python that allows users to view and analyze data from the Death Master File (DMF). The DMF contains information about deceased individuals in the United States. (It is both GUI and CLI functional.)
+The Death Master File Viewer is a graphical user interface (GUI) application built in Python that allows users to view and analyze data from the Death Master File (DMF). The DMF contains information about deceased individuals in the United States.
 
 ## Features
 
