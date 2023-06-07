@@ -120,6 +120,24 @@ if is_authenticated:
       age_options_text.insert(tk.END,
                               "\n".join(str(age) for age in age_options))
 
+  def search_by_name():
+      first_name = first_name_entry.get().lower().strip()
+      last_name = last_name_entry.get().lower().strip()
+      if 'verified_individuals' in globals():
+          search_results_df = verified_individuals.loc[
+              (verified_individuals['first_name'].str.lower() == first_name) &
+              (verified_individuals['last_name'].str.lower() == last_name)]
+          verified_individuals_text.delete("1.0", tk.END)
+          if not search_results_df.empty:
+              verified_individuals_text.insert(tk.END, search_results_df.to_string(index=False))
+          else:
+              verified_individuals_text.insert(tk.END, "No results found.")
+          verified_label.config(text=f"Search Results: {len(search_results_df)} people")
+      else:
+          verified_individuals_text.delete("1.0", tk.END)
+          verified_individuals_text.insert(tk.END, "No verified individuals found.")
+          verified_label.config(text="Verified: 0/0 people")
+  
   def download_csv_from_ntis(url, destination):
     """
     Download a CSV file from the given URL and perform operations on the downloaded file.
@@ -335,6 +353,22 @@ fetch_from_ntis()  # Fetch options for the Fetch from NTIS button
 # Create a label widget to display the verified count
 verified_label = tk.Label(window, text="Verified: 0/0 people")
 verified_label.pack(pady=10)
+
+# First name entry field
+first_name_label = tk.Label(window, text="First Name:")
+first_name_label.pack()
+first_name_entry = tk.Entry(window)
+first_name_entry.pack()
+
+# Last name entry field
+last_name_label = tk.Label(window, text="Last Name:")
+last_name_label.pack()
+last_name_entry = tk.Entry(window)
+last_name_entry.pack()
+
+# Search button
+search_button = tk.Button(window, text="Search", command=search_by_name)
+search_button.pack()
 
 # Create a label widget for Age Options
 age_options_label = tk.Label(window, text="Age Options:")
