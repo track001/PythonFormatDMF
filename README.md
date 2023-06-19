@@ -3,7 +3,8 @@ Note/Disclaimer: None of the information in the CSV file is sensitive, it is all
 ## Overview:
 - The provided code is a program designed to read a file that simulates the Social Security Administration's Death Master File (DMF) data.
 - The program aims to process the DMF records, extract relevant information, and perform various operations on the verified individuals' data.
-- When downloading the newly generated CSV (verified_individuals_MMDDYYYY) of verified individuals, it keeps the SSN encrypted except for the last 4 digits to compare against CRM data.
+- When downloading the newly generated CSV (verified_individuals_MMDDYYYY) of verified individuals, it keeps the SSN encrypted using AES encryption except for the last 4 digits to compare against CRM data.
+  - Displays a truncated version of the SSN, and concatenates encryption of the first 5 digits with the last 4 digits.
 
 Code Breakdown:
 
