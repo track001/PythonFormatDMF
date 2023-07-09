@@ -7,17 +7,17 @@ Note/Disclaimer: None of the information in the CSV file is sensitive, it is all
   - Displays a truncated version of the SSN, and concatenates encryption of the first 5 digits with the last 4 digits.
  
 ## GUI Functionality
-1. ![Login](LoginSS.JPG) Login Screen
-3. ![FalseLogin](IncorrectLogin.JPG) Entering incorrect password
-4. ![SuccessLogin](LoginSuccess.JPG) Successful login
-5. ![Main](MainScreenSS.JPG) Main screen
-6. ![SelectCSV](SelectFileSS.JPG) Select file (fetch option not shown for NTIS reasons)
-7. ![SuccessCSV](SuccessCSVSS.JPG) Successful file chosen
-8. ![Preview](PreviewCSVSS.JPG) Preview the data in the file (all fake data)
-9. ![ExampleEncrypted](EncryptedCSVSS.JPG) Save file with SSN encrypted
-10. ![MakeNew](NewCSVSS.JPG) Create new file with encrypted data
-11. ![NonEncryptedExample](PreviousFileCSVSS.JPG) What the original CSV file looked like before encryption
-12. ![EncryptedExample](EncryptedFileCSVSS.JPG) What the new CSV file looks like after encryption
+1. ![Login](01.LoginSS.JPG) Login Screen
+3. ![FalseLogin](02.IncorrectLogin.JPG) Entering incorrect password
+4. ![SuccessLogin](03.LoginSuccess.JPG) Successful login
+5. ![Main](04.MainScreenSS.JPG) Main screen
+6. ![SelectCSV](05.SelectFileSS.JPG) Select file (fetch option not shown for NTIS reasons)
+7. ![SuccessCSV](06.SuccessCSVSS.JPG) Successful file chosen
+8. ![Preview](07.PreviewCSVSS.JPG) Preview the data in the file (all fake data)
+9. ![ExampleEncrypted](08.EncryptedCSVSS.JPG) Save file with SSN encrypted
+10. ![MakeNew](09.NewCSVSS.JPG) Create new file with encrypted data
+11. ![NonEncryptedExample](10.PreviousFileCSVSS.JPG) What the original CSV file looked like before encryption
+12. ![EncryptedExample](11.EncryptedFileCSVSS.JPG) What the new CSV file looks like after encryption
 
 Code Breakdown:
 
