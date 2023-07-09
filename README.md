@@ -5,6 +5,19 @@ Note/Disclaimer: None of the information in the CSV file is sensitive, it is all
 - The program aims to process the DMF records, extract relevant information, and perform various operations on the verified individuals' data.
 - When downloading the newly generated CSV (verified_individuals_MMDDYYYY) of verified individuals, it keeps the SSN encrypted using AES encryption except for the last 4 digits to compare against CRM data.
   - Displays a truncated version of the SSN, and concatenates encryption of the first 5 digits with the last 4 digits.
+ 
+## GUI Functionality
+1. ![Login](LoginSS.JPG) Login Screen
+3. ![FalseLogin](IncorrectLogin.JPG) Entering incorrect password
+4. ![SuccessLogin](LoginSuccess.JPG) Successful login
+5. ![Main](MainScreenSS.JPG) Main screen
+6. ![SelectCSV](SelectFileSS.JPG) Select file (fetch option not shown for NTIS reasons)
+7. ![SuccessCSV](SuccessCSVSS.JPG) Successful file chosen
+8. ![Preview](PreviewCSVSS.JPG) Preview the data in the file (all fake data)
+9. ![ExampleEncrypted](EncryptedCSVSS.JPG) Save file with SSN encrypted
+10. ![MakeNew](NewCSVSS.JPG) Create new file with encrypted data
+11. ![NonEncryptedExample](PreviousFileCSVSS.JPG) What the original CSV file looked like before encryption
+12. ![EncryptedExample](EncryptedFileCSVSS.JPG) What the new CSV file looks like after encryption
 
 Code Breakdown:
 
