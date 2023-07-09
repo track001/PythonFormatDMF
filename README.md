@@ -8,8 +8,8 @@ Note/Disclaimer: None of the information in the CSV file is sensitive, it is all
  
 ## GUI Functionality
 1. ![Login](01.LoginSS.JPG) Login screen
-3. ![FalseLogin](02.IncorrectLogin.JPG) Entering incorrect password
-4. ![SuccessLogin](03.LoginSuccess.JPG) Successful login
+3. ![FalseLogin](02.IncorrectLoginSS.JPG) Entering incorrect password
+4. ![SuccessLogin](03.LoginSucessSS.JPG) Successful login
 5. ![Main](04.MainScreenSS.JPG) Main screen
 6. ![SelectCSV](05.SelectFileSS.JPG) Select file (fetch option not shown for NTIS reasons)
 7. ![SuccessCSV](06.SuccessCSVSS.JPG) Successful file chosen
