@@ -7,7 +7,7 @@ Note/Disclaimer: None of the information in the CSV file is sensitive, it is all
   - Displays a truncated version of the SSN, and concatenates encryption of the first 5 digits with the last 4 digits.
  
 ## GUI Functionality
-1. ![Login](01.LoginSS.JPG) Login Screen
+1. ![Login](01.LoginSS.JPG) Login screen
 3. ![FalseLogin](02.IncorrectLogin.JPG) Entering incorrect password
 4. ![SuccessLogin](03.LoginSuccess.JPG) Successful login
 5. ![Main](04.MainScreenSS.JPG) Main screen
